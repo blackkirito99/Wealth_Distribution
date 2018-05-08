@@ -29,5 +29,9 @@ public class Patch {
 		}
 	}
 	
+	public int getCurrentGrains() {
+		return this.current_grain;
+	}
+	
 	
 }
