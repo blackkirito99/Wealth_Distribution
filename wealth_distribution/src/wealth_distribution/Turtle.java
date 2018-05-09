@@ -7,12 +7,10 @@ public class Turtle {
 	private int vision;
 	private int metabolism;
 	private int life_expectancty;
-	private int heading; // 0 top 1 left 2 bottom 3 right
-	private int wealthClass; // 0 for low, 1 for medium, 2 for high
+	private int heading; 		// 0 top 1 left 2 bottom 3 right
+	private int wealthClass; 	// 0 for low, 1 for medium, 2 for high
 	private int x;
 	private int y;
-	
-	private boolean moved;
 	
 	
 	public Turtle(int x, int y, int life_expectancty, int vision, int metabolism, int heading, int held_grains, int age) {
@@ -24,7 +22,6 @@ public class Turtle {
 		this.metabolism = metabolism;
 		this.heading = heading;
 		this.held_grains = held_grains;
-		this.moved = false;
 	}
 	
 	public int getX() {
@@ -48,6 +45,7 @@ public class Turtle {
 		this.age++;
 	}
 	
+	// survice if age is less than life_expectancy and hold some grains
 	public boolean checkSurvive() {
 		if(this.held_grains < 0 || this.age >= this.life_expectancty) {
 			return false;
@@ -68,17 +66,9 @@ public class Turtle {
 	}
 	
 	public int getHeading() {
-		this.moved = true;
 		return heading;
 	}
 	
-	public void resetMoved() {
-		this.moved = false;
-	}
-	
-	public boolean hasMoved() {
-		return this.moved;
-	}
 	public int getVision() {
 		return this.vision;
 	}
