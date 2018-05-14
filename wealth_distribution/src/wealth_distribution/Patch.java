@@ -32,9 +32,8 @@ public class Patch {
 		current_grain = Math.floor(current_grain);
 		max_grain = (int)(current_grain);
 	}
-	public int harvetGrains() {
-		int harvested_grain = (int)current_grain;
-		current_grain = 0;
+	public int harvested() {
+		int harvested_grain = (int)(current_grain/turtle_on_patch);
 		return harvested_grain;
 	}
 	
@@ -84,6 +83,10 @@ public class Patch {
 	
 	public int getTurtleCount() {
 		return this.turtle_on_patch;
+	}
+	
+	public void clear() {
+		current_grain = 0;
 	}
 	
 	

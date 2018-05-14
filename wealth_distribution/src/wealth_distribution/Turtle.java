@@ -66,9 +66,9 @@ public class Turtle {
 		//System.out.println(this.getCurrentGrains() + " " + richest_amount + " " + this.wealthClass);
 	}
 	
-	/*public int getHeading() {
-		return heading;
-	}*/
+	public int getHeading() {
+		return direction;
+	}
 	
 	public int getVision() {
 		return this.vision;
@@ -94,10 +94,10 @@ public class Turtle {
 		int right = 0;
 		int size = Params.MAP_SIZE;
 		for(int i = 1; i <= vision; i++) {
-			top += patches[x][(y+1)%size].getCurrentGrains();
-			bot += patches[x][(y-1+size)%size].getCurrentGrains();
-			left += patches[(x-1+size)%size][y].getCurrentGrains();
-			right += patches[(x+1)%size][y].getCurrentGrains();
+			top += (int)patches[x][(y+1)%size].getCurrentGrains();
+			bot += (int)patches[x][(y-1+size)%size].getCurrentGrains();
+			left += (int)patches[(x-1+size)%size][y].getCurrentGrains();
+			right += (int)patches[(x+1)%size][y].getCurrentGrains();
 		}
 		if(top >= bot && top >= left && top >= right) {
 			updateHeading(0);

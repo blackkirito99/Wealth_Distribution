@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Params {
 
-  public static int NUMPEOPLE = 250;
+  public static int NUMPEOPLE = 100;
   
   public static int VISION_MAX = 5;
   
@@ -29,7 +29,7 @@ public class Params {
   
   public static int NOGRAIN = 0;
   
-  public static int MAP_SIZE = 20;
+  public static int MAP_SIZE = 100;
   
   public static double DIFFUSE = 0.25;
 
