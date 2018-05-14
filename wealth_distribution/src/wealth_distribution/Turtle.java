@@ -1,27 +1,28 @@
 package wealth_distribution;
 
+import java.util.Random;
 
 public class Turtle {
-	private int held_grains;
+	private int heldGrains;
 	private int age;
 	private int vision;
-	private int metabolism;
-	private int life_expectancty;
-	private int heading; 		// 0 top 1 left 2 bottom 3 right
+	private int metabolism;  
+	private int lifeExpectancy;  
+	private int direction; 		// 0 top 1 left 2 bottom 3 right
 	private int wealthClass; 	// 0 for low, 1 for medium, 2 for high
 	private int x;
 	private int y;
 	
 	
-	public Turtle(int x, int y, int life_expectancty, int vision, int metabolism, int heading, int held_grains, int age) {
-		this.x = x;
-		this.y = y;
-		this.age = age;
-		this.life_expectancty = life_expectancty;
-		this.vision = vision;
-		this.metabolism = metabolism;
-		this.heading = heading;
-		this.held_grains = held_grains;
+	public Turtle() {
+		x = Params.randomLocation();
+		y = Params.randomLocation();
+		age = 0;
+		lifeExpectancy = Params.randomLifeExpectancy();
+		vision = Params.randomVision();
+		metabolism = Params.randomMetabolism();
+		//this.heading = heading;
+		heldGrains = metabolism + Params.randomWealth();
 	}
 	
 	public int getX() {
@@ -32,42 +33,42 @@ public class Turtle {
 		return this.y;
 	}
 	public int getCurrentGrains() {
-		return this.held_grains;
+		return this.heldGrains;
 	}
 	public void gainGrains(int harvestedGrain) {
-		this.held_grains += harvestedGrain;
+		this.heldGrains += harvestedGrain;
 	}
 	public void eatGrains() {
-		this.held_grains -= this.metabolism;
+		this.heldGrains -= metabolism;
 	}
 	
 	public void growUp() {
 		this.age++;
 	}
 	
-	// survice if age is less than life_expectancy and hold some grains
+	// survive if age is less than life_expectancy and hold some grains
 	public boolean checkSurvive() {
-		if(this.held_grains < 0 || this.age >= this.life_expectancty) {
+		if(this.heldGrains < 0 || this.age >= lifeExpectancy) {
 			return false;
 		}
 		return true;
 	}
 	
 	public void updateClass(int richest_amount) {
-		if(this.getCurrentGrains() > richest_amount*2.0/3.0) {
-			this.wealthClass = 2;
-		}else if(this.getCurrentGrains() > richest_amount*1.0/3.0) {
-			this.wealthClass = 1;
-		}else if(this.getCurrentGrains() <= richest_amount*1.0/3.0) {
-			this.wealthClass = 0;
+		if(getCurrentGrains() > richest_amount*2.0/3.0) {
+			wealthClass = 2;
+		}else if(getCurrentGrains() > richest_amount*1.0/3.0) {
+			wealthClass = 1;
+		}else if(getCurrentGrains() <= richest_amount*1.0/3.0) {
+			wealthClass = 0;
 	
 		}
 		//System.out.println(this.getCurrentGrains() + " " + richest_amount + " " + this.wealthClass);
 	}
 	
-	public int getHeading() {
+	/*public int getHeading() {
 		return heading;
-	}
+	}*/
 	
 	public int getVision() {
 		return this.vision;
@@ -77,8 +78,8 @@ public class Turtle {
 		return this.wealthClass;
 	}
 	
-	public void updateHeading(int heading) {
-		this.heading = heading;
+	public void updateHeading(int direction) {
+		this.direction = direction;
 	}
 
 	public void updateLocation(int x, int y) {
@@ -86,4 +87,32 @@ public class Turtle {
 		this.y = y;
 		
 	}
+	public void findOptimalPath(Patch[][] patches) {
+		int top = 0;
+		int left = 0;
+		int bot = 0;
+		int right = 0;
+		int size = Params.MAP_SIZE;
+		for(int i = 1; i <= vision; i++) {
+			top += patches[x][(y+1)%size].getGrainHere();
+			bot += patches[x][(y-1+size)%size].getGrainHere();
+			left += patches[(x-1+size)%size][y].getGrainHere();
+			right += patches[(x+1)%size][y].getGrainHere();
+		}
+		if(top >= bot && top >= left && top >= right) {
+			updateHeading(0);
+		}
+		if(left >= top && left >= bot && left >= right) {
+			updateHeading(1);
+		}
+		if(bot >= top && bot >= right && bot >= left) {
+			updateHeading(2);
+		}
+		else {
+			updateHeading(3);
+		}
+		
+		
+	}
+	
 }

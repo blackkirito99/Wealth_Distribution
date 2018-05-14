@@ -1,49 +1,77 @@
 package wealth_distribution;
 
+import java.util.Random;
+
 public class Patch {
 	private int max_grain;
-	private double current_grain; // use double for initialisation, but always return integer to outside
-	private int regrow_amount;  
-	private int regrow_intervel;
-	private int turtle_on_patch;
-	private boolean isBestLand; // boolean if patch is best land where can hold maximum grain possible
+	// use double for initialization, but always return integer to outside
+	private double current_grain = Params.NOGRAIN; 
+	private int regrow_amount = Params.GRWON_NUM;  
+	private int regrow_intervel = Params.INTERVAL;
+	private int turtle_on_patch = 0;
+	private double diffuse = Params.DIFFUSE;
+	private double remain = 1 - diffuse;
+	private int grainHere;
+	// boolean if patch is best land where can hold maximum grain possible
+	private boolean isBestLand = false; 
 	
-	public Patch(int regrow_amount, int regrow_intervel) {
-		this.current_grain = 0;
-		this.regrow_amount = regrow_amount;
-		this.regrow_intervel = regrow_intervel;
-		this.turtle_on_patch = 0;
+	public Patch() {
+		if(Params.isBestLand()) {
+			current_grain = Params.GRAIN_MAX;
+			max_grain = Params.GRAIN_MAX;
+			isBestLand = true;
+		}
+		
 	}
-	public void setGrains(int amount) {
-		this.current_grain = amount;
+	public void setGrains(double amount) {
+		current_grain = amount;
 	}
-	public void addGrains(int amount) {
-		this.current_grain += amount;
+	public void addGrains(double amount) {
+		current_grain += amount;
 	}
-	public void finalGrainsInitilization(int maximum) {
-		//round to integer number of grain
-		this.current_grain = (int)(this.current_grain);
-		this.max_grain = this.isBestLand? maximum : this.getCurrentGrains();
+	public void finalGrainsInitilization() {
+		max_grain = (int)(current_grain);
+		grainHere = max_grain;
 	}
 	public int harvetGrains() {
-		int harvested_grain = this.getCurrentGrains();
-		this.current_grain = 0;
+		int harvested_grain = grainHere;
+		current_grain = 0;
 		return harvested_grain;
 	}
 	
-	// regrow grains if tick mode regrow_intervel is 0 which means it is time to regrow
+	// regrow grains if tick mode regrow_intervel is 0 
+	//which means it is time to regrow
 	public void growGrains(int tick) {
-		if(tick % this.regrow_intervel == 0) {
-			this.current_grain += this.regrow_amount;
-			if(this.current_grain > this.max_grain) {
-				this.current_grain = this.max_grain;
+		if(tick % regrow_intervel == 0) {
+			grainHere += regrow_amount;
+			if(grainHere > max_grain) {
+				grainHere = max_grain;
 			}
 		}
 	}
 	
-	public int getCurrentGrains() {
-		return (int)(this.current_grain);
+	public void grainDiffuse() {
+		current_grain = current_grain * remain;
 	}
+	
+	
+	public double getCurrentGrains() {
+		return current_grain;
+	}
+	
+	public int getGrainHere() {
+		return grainHere;
+	}
+	
+	public double getDiffuseAmount() {
+		double amount = current_grain * diffuse / 8.0;
+		return amount;
+	}
+	
+	public int getMaxGrain() {
+		return max_grain;
+	}
+	
 	public void setBestLand() {
 		this.isBestLand = true;
 	}
