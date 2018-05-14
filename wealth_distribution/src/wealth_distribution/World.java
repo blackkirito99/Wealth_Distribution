@@ -304,13 +304,13 @@ public class World {
 	
 
 	private void printArray() {
-		int[][] arrayDouble = new int[size][size];
+		double[][] arrayDouble = new double[size][size];
 		for(int x = 0; x < this.size; x++) {
 			for(int y = 0; y < this.size; y++) {
-				arrayDouble[x][y] = patches[x][y].getGrainHere();
+				arrayDouble[x][y] = patches[x][y].getCurrentGrains();
 			}
 		}
-		for(int[] array : arrayDouble) {
+		for(double[] array : arrayDouble) {
 			System.out.println(Arrays.toString(array));  
 		}
 			

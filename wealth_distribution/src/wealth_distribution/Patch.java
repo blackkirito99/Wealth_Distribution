@@ -11,7 +11,6 @@ public class Patch {
 	private int turtle_on_patch = 0;
 	private double diffuse = Params.DIFFUSE;
 	private double remain = 1 - diffuse;
-	private int grainHere;
 	// boolean if patch is best land where can hold maximum grain possible
 	private boolean isBestLand = false; 
 	
@@ -30,11 +29,11 @@ public class Patch {
 		current_grain += amount;
 	}
 	public void finalGrainsInitilization() {
+		current_grain = Math.floor(current_grain);
 		max_grain = (int)(current_grain);
-		grainHere = max_grain;
 	}
 	public int harvetGrains() {
-		int harvested_grain = grainHere;
+		int harvested_grain = (int)current_grain;
 		current_grain = 0;
 		return harvested_grain;
 	}
@@ -43,9 +42,9 @@ public class Patch {
 	//which means it is time to regrow
 	public void growGrains(int tick) {
 		if(tick % regrow_intervel == 0) {
-			grainHere += regrow_amount;
-			if(grainHere > max_grain) {
-				grainHere = max_grain;
+			current_grain += regrow_amount;
+			if((int)current_grain > max_grain) {
+				current_grain = max_grain;
 			}
 		}
 	}
@@ -59,9 +58,6 @@ public class Patch {
 		return current_grain;
 	}
 	
-	public int getGrainHere() {
-		return grainHere;
-	}
 	
 	public double getDiffuseAmount() {
 		double amount = current_grain * diffuse / 8.0;

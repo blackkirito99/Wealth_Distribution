@@ -94,10 +94,10 @@ public class Turtle {
 		int right = 0;
 		int size = Params.MAP_SIZE;
 		for(int i = 1; i <= vision; i++) {
-			top += patches[x][(y+1)%size].getGrainHere();
-			bot += patches[x][(y-1+size)%size].getGrainHere();
-			left += patches[(x-1+size)%size][y].getGrainHere();
-			right += patches[(x+1)%size][y].getGrainHere();
+			top += patches[x][(y+1)%size].getCurrentGrains();
+			bot += patches[x][(y-1+size)%size].getCurrentGrains();
+			left += patches[(x-1+size)%size][y].getCurrentGrains();
+			right += patches[(x+1)%size][y].getCurrentGrains();
 		}
 		if(top >= bot && top >= left && top >= right) {
 			updateHeading(0);
