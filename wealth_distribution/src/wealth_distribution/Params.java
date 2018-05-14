@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Params {
 
-  public static int NUMPEOPLE = 100;
+  public static int NUMPEOPLE = 250;
   
   public static int VISION_MAX = 5;
   
@@ -74,6 +74,11 @@ public class Params {
 		  isBestLand = false;
 	  }
 	  return isBestLand;
+  }
+  public static int randomAge(int life) {
+	  Random random = new Random();
+	  int age = random.nextInt(life);
+	  return age;
   }
 }
 

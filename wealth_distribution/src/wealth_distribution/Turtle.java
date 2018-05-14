@@ -17,12 +17,12 @@ public class Turtle {
 	public Turtle() {
 		x = Params.randomLocation();
 		y = Params.randomLocation();
-		age = 0;
 		lifeExpectancy = Params.randomLifeExpectancy();
 		vision = Params.randomVision();
 		metabolism = Params.randomMetabolism();
 		//this.heading = heading;
 		heldGrains = metabolism + Params.randomWealth();
+		age = Params.randomAge(lifeExpectancy);
 	}
 	
 	public int getX() {
