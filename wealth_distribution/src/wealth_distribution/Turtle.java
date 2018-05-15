@@ -18,7 +18,6 @@ public class Turtle implements Comparable<Turtle>{
 		lifeExpectancy = Params.randomLifeExpectancy();
 		vision = Params.randomVision();
 		metabolism = Params.randomMetabolism();
-		//this.heading = heading;
 		heldGrains = metabolism + Params.randomWealth();
 		age = Params.randomAge(lifeExpectancy);
 	}
@@ -29,8 +28,10 @@ public class Turtle implements Comparable<Turtle>{
 		lifeExpectancy = Params.randomLifeExpectancy();
 		vision = Params.randomVision();
 		metabolism = Params.randomMetabolism();
-		heldGrains = (int)(metabolism + wealth * Params.INHERIT_PERCENT);
-		//heldGrains = metabolism + Params.randomWealth();
+		heldGrains = metabolism + Params.randomWealth(); 
+		if(wealth > 0) {
+			heldGrains += (int)((double)wealth * Params.INHERIT_PERCENT);
+		}
 		age = 0;
 	}
 	

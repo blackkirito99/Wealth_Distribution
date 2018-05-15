@@ -7,7 +7,7 @@ public class Simulator {
 		w.setUp();
 		String filename = "OUTPUT.csv";
 		CsvFileWriter writer = new CsvFileWriter(filename);
-		for(int i = 0;  i < 100; i++) {
+		for(int i = 0;  i < 200; i++) {
 			w.go();
 			writer.writeCsvFile(w);
 		}

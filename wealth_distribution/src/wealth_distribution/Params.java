@@ -10,7 +10,7 @@ public class Params {
   
   public final static int UPPER_CLASS = 2;
 
-  public final static int NUMPEOPLE = 250;
+  public final static int NUMPEOPLE = 1000;
   
   public final static int VISION_MAX = 5;
   
@@ -39,7 +39,7 @@ public class Params {
   public final static double DIFFUSE = 0.25;
 
   //offspring will inherit 80% the wealth of the parent
-  public final static double INHERIT_PERCENT = 0.5;
+  public final static double INHERIT_PERCENT = 0;
   
 
   public static int randomLifeExpectancy() {
