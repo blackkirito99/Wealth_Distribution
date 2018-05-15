@@ -9,6 +9,10 @@ public class World {
 	private List<Turtle> turtles;
 	private int size = Params.MAP_SIZE;
 	private int tick = 0;
+	private int workingClass;
+	private int middleClass;
+	private int upperClass;
+	
 
 	public World(){
 		patches= new Patch[size][size];
@@ -74,15 +78,13 @@ public class World {
 		for(int i = 0; i < Params.NUMPEOPLE; i++) {
 			// generate totally random turtle
 			Turtle new_turtle = new Turtle();
-			//max_initial_wealth = (max_initial_wealth > new_turtle.getCurrentGrains())? max_initial_wealth : new_turtle.getCurrentGrains();
-			//max_initial_wealth = Math.max(max_initial_wealth, new_turtle.getCurrentGrains());
 			turtles.add(new_turtle);
 			// the patch has new turtle enter, increase count
 			int xAxis = new_turtle.getX();
 			int yAxis = new_turtle.getY();
 			patches[xAxis][yAxis].turtleEnter();
 		}
-		//int maxWealth = findMaxWealth();
+	
 		
 		// update each turtle wealth class based on initial held grains
 		updateTurtleClass(findMaxWealth());
@@ -144,6 +146,9 @@ public class World {
 					break;
 			}
 		}
+		workingClass = low_count;
+		middleClass = medium_count;
+		upperClass = high_count;
 		System.out.println("low: " + low_count + "; med: " + medium_count + "; high: " + high_count);
 	}
 
@@ -229,6 +234,44 @@ public class World {
 			}
 		}
 		System.out.println("Current Tick: " + tick+ "\nTurtles count: "+ turtles_count);
+	}
+	
+	public int getWorkingClass() {
+		return workingClass;
+	}
+	public int getMiddleClass() {
+		return middleClass;
+	}
+	public int getUpperClass() {
+		return upperClass;
+	}
+	public int getTick() {
+		return tick;
+	}
+	
+	public int totalWealth() {
+		int total = 0;
+		for(Turtle t : turtles) {
+			total = total + t.getCurrentGrains();
+		}
+		return total;
+	}
+	
+	public double getGiniIndex() {
+		int index = 0;
+		int wealthSoFar = 0;
+		int total = totalWealth();
+		double gini = 0;
+		while(index < turtles.size()) {
+			wealthSoFar += turtles.get(index).getCurrentGrains();
+			index++;
+			gini = gini+(double)index/turtles.size()-(double)wealthSoFar/total;
+			System.out.println("*********************");
+			System.out.println(gini);
+			
+		}
+		return gini;
+		
 	}
 	
 
