@@ -1,17 +1,33 @@
 package wealth_distribution;
 
+/**
+ * Turtles travel on tiles, trying to collecting as many grains as possible
+ * whilst consuming grains every tick
+ * @author runze
+ *
+ */
+
 public class Turtle implements Comparable<Turtle>{
+	//amount of grain a turtle currently possesses
 	private int heldGrains;
 	private int age;
+	
+	//tiles ahead a turtle could see 
 	private int vision;
-	private int metabolism;  
+	//grains consumed each tick
+	private int metabolism;
+	//maximum number of tick a turtle could survive
 	private int lifeExpectancy;  
-	private int direction; 		// 0 top 1 left 2 bottom 3 right
-	private int wealthClass; 	// 0 for low, 1 for medium, 2 for high
+	//the direction a turtle will march
+	private int direction;
+	//wealth class for turtles
+	private int wealthClass; 
+	//location, x coordinate
 	private int x;
+	//location, y coordinate
 	private int y;
 	
-	
+	//constructor
 	public Turtle() {
 		x = Params.randomLocation();
 		y = Params.randomLocation();
@@ -22,6 +38,7 @@ public class Turtle implements Comparable<Turtle>{
 		age = Params.randomAge(lifeExpectancy);
 	}
 	
+	//constructor 
 	public Turtle(int wealth) {
 		x = Params.randomLocation();
 		y = Params.randomLocation();
@@ -36,40 +53,46 @@ public class Turtle implements Comparable<Turtle>{
 	}
 	
 	public int getX() {
-		return this.x;
+		return x;
 	}
 	
 	public int getY() {
-		return this.y;
+		return y;
 	}
 	public int getCurrentGrains() {
-		return this.heldGrains;
+		return heldGrains;
 	}
+	
+	//turtles gain grains
 	public void gainGrains(int harvestedGrain) {
-		this.heldGrains += harvestedGrain;
+		heldGrains += harvestedGrain;
 	}
+	//turtles consume grain
 	public void eatGrains() {
-		this.heldGrains -= metabolism;
+		heldGrains -= metabolism;
 	}
 	
+	//turtles are aging
 	public void growUp() {
-		this.age++;
+		age++;
 	}
 	
-	// survive if age is less than life_expectancy and hold some grains
+	// check if the turtle can survive
 	public boolean checkSurvive() {
-		if(this.heldGrains < 0 || this.age >= lifeExpectancy) {
+		if(heldGrains < 0 || age >= lifeExpectancy) {
 			return false;
 		}
 		return true;
 	}
 	
-	public void updateClass(int richest_amount) {
-		if(getCurrentGrains() > richest_amount*2.0/3.0) {
+	//check the wealth class that a turtle belongs to
+	//by comparing its grain with the highest number of grains
+	public void updateClass(int richest) {
+		if(getCurrentGrains() > richest*2.0/3.0) {
 			wealthClass = Params.UPPER_CLASS;
-		}else if(getCurrentGrains() > richest_amount*1.0/3.0) {
+		}else if(getCurrentGrains() > richest*1.0/3.0) {
 			wealthClass = Params.MIDDLE_CLASS;
-		}else if(getCurrentGrains() <= richest_amount*1.0/3.0) {
+		}else if(getCurrentGrains() <= richest*1.0/3.0) {
 			wealthClass = Params.WORKING_CLASS;
 	
 		}
@@ -87,16 +110,18 @@ public class Turtle implements Comparable<Turtle>{
 	public int getWealthClass() {
 		return this.wealthClass;
 	}
-	
-	public void updateHeading(int direction) {
-		this.direction = direction;
+	//updating the direction 
+	public void updateHeading(int dir) {
+		direction = dir;
 	}
-
+	//updating location
 	public void updateLocation(int x, int y) {
 		this.x = x;
 		this.y = y;
 		
 	}
+	//find the best direction that highest number of grains is detected 
+	//in this direction
 	public void findOptimalPath(Patch[][] patches) {
 		int top = 0;
 		int left = 0;
@@ -110,21 +135,26 @@ public class Turtle implements Comparable<Turtle>{
 			right += (int)patches[(x+1)%size][y].getCurrentGrains();
 		}
 		if(top >= bot && top >= left && top >= right) {
-			updateHeading(0);
+			updateHeading(Params.TOP);
 		}
 		if(left >= top && left >= bot && left >= right) {
-			updateHeading(1);
+			updateHeading(Params.LEFT);
 		}
 		if(bot >= top && bot >= right && bot >= left) {
-			updateHeading(2);
+			updateHeading(Params.BOTTOM);
 		}
 		else {
-			updateHeading(3);
+			updateHeading(Params.RIGHT);
 		}
 		
 		
 	}
 	
+	//turtles move in the map guided by the best direction provided
+	//according to the original model, turtles do not get to move
+	//out of the map; for instance
+	//if a turtle goes out of the left boundary of the map
+	//he/she will enter the map from the right border of the map again
 	public void move(Patch[][] patches) {
 		
 		int size = Params.MAP_SIZE;
@@ -132,24 +162,24 @@ public class Turtle implements Comparable<Turtle>{
 		
 		int new_x;
 		int new_y;
-		// turtle enter new patch based on heading, increase count in that patch
+		// turtle enter new patch based on direction
 		switch (direction) {
-			case 0:
+			case Params.TOP:
 				new_y = (y+1)%size;
 				updateLocation(x, new_y);
 				patches[x][new_y].turtleEnter();
 				break;
-			case 1:
+			case Params.LEFT:
 				new_x = (x-1+size)%size;
 				updateLocation(new_x, y);
 				patches[new_x][y].turtleEnter();
 				break;
-			case 2:
+			case Params.BOTTOM:
 				new_y = (y-1+size)%size;
 				updateLocation(x, new_y);
 				patches[x][new_y].turtleEnter();
 				break;
-			case 3:
+			case Params.RIGHT:
 				new_x = (x+1)%size;
 				updateLocation(new_x, y);
 				patches[new_x][y].turtleEnter();
@@ -158,8 +188,8 @@ public class Turtle implements Comparable<Turtle>{
 				break;
 		}
 	}
-	
-	public void havest(Patch[][] patches) {
+	//turtle harvest grain from tiles
+	public void harvest(Patch[][] patches) {
 		int amount = patches[x][y].harvested();
 		gainGrains(amount);
 	}

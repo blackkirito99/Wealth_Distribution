@@ -1,5 +1,8 @@
 package wealth_distribution;
-
+/**
+ * class that writes the generated data to a csv file
+ * to collect data for experiments
+ */
 import java.io.FileWriter;
 import java.io.IOException;
 

@@ -1,17 +1,27 @@
 package wealth_distribution;
 
+/**
+ * World where turtles interact with the entire map
+ */
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class World {
+	//two dimensional array of patches, the map of the world
 	private Patch[][] patches;
+	//list of turtles which are the agents of the world
 	private List<Turtle> turtles;
+	//size of the map
 	private int size = Params.MAP_SIZE;
+	//time
 	private int tick = 0;
+	//number of turtles that belongs to working class
 	private int workingClass;
+	//number of turtles that belongs to middle class
 	private int middleClass;
+	//number of turtles that belongs to upper class
 	private int upperClass;
 	
 
@@ -29,8 +39,8 @@ public class World {
 		//sanityCheck();
 	}
 	
+	//create the map
 	public void setUpPatches() {
-		// Create all patches and make some of them best-land
 		for(int x = 0; x < size; x++) {
 			for(int y = 0; y < size; y++) {
 				Patch p = new Patch();
@@ -64,10 +74,10 @@ public class World {
 				}
 			}
 		}
-		//initial grain level is also maximum
+		//initialize location maximum of grains on each tile
 		for(int x = 0; x < size; x++) {
 			for(int y = 0; y < size; y++) {
-				this.patches[x][y].finalGrainsInitilization();
+				patches[x][y].finalGrainsInitilization();
 			}
 		}
 		//printArray();
@@ -76,24 +86,18 @@ public class World {
 	
 	// randomly seed turtles to the world
 	public void setUpTurtles() {
-		// to find the richest amount after initialization
 		for(int i = 0; i < Params.NUMPEOPLE; i++) {
-			// generate totally random turtle
 			Turtle new_turtle = new Turtle();
 			turtles.add(new_turtle);
-			// the patch has new turtle enter, increase count
 			int xAxis = new_turtle.getX();
 			int yAxis = new_turtle.getY();
 			patches[xAxis][yAxis].turtleEnter();
 		}
 	
-		
-		// update each turtle wealth class based on initial held grains
 		updateTurtleClass(findMaxWealth());
 		classInfo();
-		//printTurtle();
 	}
-	
+	//find the wealthiest turtle and returns the wealth he/she has
 	public int findMaxWealth() {
 		int max = 0;
 		for(Turtle people : turtles) {
@@ -104,6 +108,7 @@ public class World {
 		return max;
 	}
 	
+	//group turtles in different classes(working/middle/upper)
 	public void updateTurtleClass(int wealth) {
 		for(Turtle t : turtles) {
 			t.updateClass(wealth);
@@ -111,7 +116,7 @@ public class World {
 		
 	}
 	
-	// go one tick forward
+	//run everything in the world
 	public void go() {
 		tick++;
 		updateDirection();
@@ -120,16 +125,13 @@ public class World {
 		survive();
 		patchesRegrow();
 		updateTurtleClass(findMaxWealth());
-		Collections.sort(this.turtles);
-		//sanityCheck();
-		
-		// need statistic methods
+		Collections.sort(turtles);
+		//sanityCheck();	
 		classInfo();
-		//printArray();
-		//printTurtle();
+
 	}
 	
-	// show class in current tick
+	//shows number of turtles categorized in the three classes
 	public void classInfo() {
 		int low_count = 0;
 		int medium_count = 0;
@@ -159,24 +161,24 @@ public class World {
 	
 
 	
-	// each turtle turns to the direction with most number of grains within its vision
+	//every turtle find the best direction to march
+	//using the same algorithm given in the original model
 	public void updateDirection() {
 		for(Turtle t : turtles) {
-			// get number of grains within vision in all four directions
 			t.findOptimalPath(patches);
 			
 		}
 	}
 	
+	//every turtle harvest grains
 	public void harvestGrains() {
-		// distribute grain evenly if several turtles on same patch
 		for(Turtle t : turtles) {
-			t.havest(patches);
+			t.harvest(patches);
 		}
-		
 		clearPatches();
 	}
 	
+	// set grain on patch to 0 if patches have been harvested
 	public void clearPatches() {
 		for(Patch[] rows : patches) {
 			for(Patch p : rows) {
@@ -187,14 +189,17 @@ public class World {
 		}
 	}
 	
+	//turtles move
 	public void move() {
 		for(Turtle t : turtles) {
 			t.move(patches);
 		}
 		
 	}
+	
+	//check if turtle could survive this tick
+	//if not, turtles would generate an offspring 
 	private void survive() {
-		//eat & age & die
 		for(int i = 0; i < turtles.size(); i++) {
 			Turtle t = turtles.get(i);
 			t.eatGrains();
@@ -206,16 +211,12 @@ public class World {
 				turtles.set(i, offspring);
 				patches[offspring.getX()][offspring.getY()].turtleEnter();
 				
-				// check if this offspring held most number of grains
+				
 			}
 		}
-		// return for statistics usage
 	}
 	
-	// update each turtles' wealth class based on its amount of current held grains
-
-	
-	// regrow grains in each patches
+	// re-grow grains on each patch
 	public void patchesRegrow() {
 		for(int x = 0; x < size; x++) {
 			for(int y = 0; y < size; y++) {
@@ -224,8 +225,6 @@ public class World {
 		}
 		
 	}
-
-
 
 	
 	public void sanityCheck() {
@@ -256,6 +255,7 @@ public class World {
 		return tick;
 	}
 	
+	//get the sum of grains held by each turtle
 	public int totalWealth() {
 		int total = 0;
 		for(Turtle t : turtles) {
@@ -264,6 +264,7 @@ public class World {
 		return total;
 	}
 	
+	//return gini index
 	public double getGiniIndex() {
 		int index = 0;
 		int wealthSoFar = 0;
@@ -273,8 +274,6 @@ public class World {
 			wealthSoFar += turtles.get(index).getCurrentGrains();
 			index++;
 			gini += (double)index/turtles.size()-(double)wealthSoFar/total;
-			//System.out.println("*********************");
-			//System.out.println(gini);
 			
 		}
 		gini =  (gini/this.turtles.size())/0.5;
