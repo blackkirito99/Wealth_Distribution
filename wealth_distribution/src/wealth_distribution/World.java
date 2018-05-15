@@ -2,6 +2,7 @@ package wealth_distribution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class World {
@@ -24,7 +25,8 @@ public class World {
 	public void setUp() {
 		setUpPatches();
 		setUpTurtles();
-		sanityCheck();
+		Collections.sort(this.turtles);
+		//sanityCheck();
 	}
 	
 	public void setUpPatches() {
@@ -118,7 +120,8 @@ public class World {
 		survive();
 		patchesRegrow();
 		updateTurtleClass(findMaxWealth());
-		sanityCheck();
+		Collections.sort(this.turtles);
+		//sanityCheck();
 		
 		// need statistic methods
 		classInfo();
@@ -234,6 +237,10 @@ public class World {
 			}
 		}
 		System.out.println("Current Tick: " + tick+ "\nTurtles count: "+ turtles_count);
+		for(int i = 0; i < this.turtles.size();i++) {
+			System.out.println(i + ": " + this.turtles.get(i).getCurrentGrains());
+		}
+		
 	}
 	
 	public int getWorkingClass() {
@@ -265,11 +272,13 @@ public class World {
 		while(index < turtles.size()) {
 			wealthSoFar += turtles.get(index).getCurrentGrains();
 			index++;
-			gini = gini+(double)index/turtles.size()-(double)wealthSoFar/total;
-			System.out.println("*********************");
-			System.out.println(gini);
+			gini += (double)index/turtles.size()-(double)wealthSoFar/total;
+			//System.out.println("*********************");
+			//System.out.println(gini);
 			
 		}
+		gini =  (gini/this.turtles.size())/0.5;
+		System.out.println(gini);
 		return gini;
 		
 	}

@@ -1,8 +1,6 @@
 package wealth_distribution;
 
-import java.util.Random;
-
-public class Turtle {
+public class Turtle implements Comparable<Turtle>{
 	private int heldGrains;
 	private int age;
 	private int vision;
@@ -163,6 +161,11 @@ public class Turtle {
 	public void havest(Patch[][] patches) {
 		int amount = patches[x][y].harvested();
 		gainGrains(amount);
+	}
+
+	@Override
+	public int compareTo(Turtle arg0) {
+		return this.getCurrentGrains() - arg0.getCurrentGrains();
 	}
 	
 	
