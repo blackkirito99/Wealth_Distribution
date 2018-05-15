@@ -89,5 +89,25 @@ public class Patch {
 		current_grain = 0;
 	}
 	
+	public void diffuse(int x, int y, Patch[][] patches) {
+		// Calculate amount to spread to each neighbour
+		patches[x][y].grainDiffuse();
+		double amount = patches[x][y].getDiffuseAmount();
+		int size = Params.MAP_SIZE;
+		
+		// Spread grains to surrounding 8 patches equally
+		patches[(x-1+size)%size][(y-1+size)%size].addGrains(amount);
+		patches[x][(y-1+size)%size].addGrains(amount);
+		patches[(x+1)%size][(y-1+size)%size].addGrains(amount);
+		patches[(x-1+size)%size][y].addGrains(amount);
+		patches[(x+1)%size][y].addGrains(amount);
+		patches[(x-1+size)%size][(y+1)%size].addGrains(amount);
+		patches[x][(y+1)%size].addGrains(amount);
+		patches[(x+1)%size][(y+1)%size].addGrains(amount);
+	}
+	
+	
+
+	
 	
 }

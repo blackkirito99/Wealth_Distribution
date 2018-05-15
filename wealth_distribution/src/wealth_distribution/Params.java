@@ -4,35 +4,42 @@ import java.util.Random;
 
 
 public class Params {
+  public final static int WORKING_CLASS = 0;
+  
+  public final static int MIDDLE_CLASS = 1;
+  
+  public final static int UPPER_CLASS = 2;
 
-  public static int NUMPEOPLE = 250;
+  public final static int NUMPEOPLE = 250;
   
-  public static int VISION_MAX = 5;
+  public final static int VISION_MAX = 5;
   
-  public static int METABOLISM_MAX = 15;
+  public final static int METABOLISM_MAX = 15;
   
-  public static int LIFE_MIN = 1;
+  public final static int LIFE_MIN = 1;
   
-  public static int LIFE_MAX = 83;
+  public final static int LIFE_MAX = 83;
   
-  public static int BEST_LAND = 100;
+  public final static int BEST_LAND = 100;
   
-  public static int PERCENT_BEST_LAND = 10;
+  public final static int PERCENT_BEST_LAND = 10;
   
-  public static int INTERVAL = 1;
+  public final static int INTERVAL = 1;
   
-  public static int GRWON_NUM= 4;
+  public final static int GRWON_NUM= 4;
   
-  public static int INITIAL_WEALTH = 50;
+  public final static int INITIAL_WEALTH = 50;
   
-  public static int GRAIN_MAX = 50;
+  public final static int GRAIN_MAX = 50;
   
-  public static int NOGRAIN = 0;
+  public final static int NOGRAIN = 0;
   
-  public static int MAP_SIZE = 100;
+  public final static int MAP_SIZE = 100;
   
-  public static double DIFFUSE = 0.25;
+  public final static double DIFFUSE = 0.25;
 
+  //offspring will inherit 80% the wealth of the parent
+  public final static double INHERIT_PERCENT = 0.5;
   
 
   public static int randomLifeExpectancy() {

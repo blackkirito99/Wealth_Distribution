@@ -25,6 +25,17 @@ public class Turtle {
 		age = Params.randomAge(lifeExpectancy);
 	}
 	
+	public Turtle(int wealth) {
+		x = Params.randomLocation();
+		y = Params.randomLocation();
+		lifeExpectancy = Params.randomLifeExpectancy();
+		vision = Params.randomVision();
+		metabolism = Params.randomMetabolism();
+		heldGrains = (int)(metabolism + wealth * Params.INHERIT_PERCENT);
+		//heldGrains = metabolism + Params.randomWealth();
+		age = 0;
+	}
+	
 	public int getX() {
 		return this.x;
 	}
@@ -56,11 +67,11 @@ public class Turtle {
 	
 	public void updateClass(int richest_amount) {
 		if(getCurrentGrains() > richest_amount*2.0/3.0) {
-			wealthClass = 2;
+			wealthClass = Params.UPPER_CLASS;
 		}else if(getCurrentGrains() > richest_amount*1.0/3.0) {
-			wealthClass = 1;
+			wealthClass = Params.MIDDLE_CLASS;
 		}else if(getCurrentGrains() <= richest_amount*1.0/3.0) {
-			wealthClass = 0;
+			wealthClass = Params.WORKING_CLASS;
 	
 		}
 		//System.out.println(this.getCurrentGrains() + " " + richest_amount + " " + this.wealthClass);
@@ -114,5 +125,46 @@ public class Turtle {
 		
 		
 	}
+	
+	public void move(Patch[][] patches) {
+		
+		int size = Params.MAP_SIZE;
+		patches[x][y].turtleLeave();
+		
+		int new_x;
+		int new_y;
+		// turtle enter new patch based on heading, increase count in that patch
+		switch (direction) {
+			case 0:
+				new_y = (y+1)%size;
+				updateLocation(x, new_y);
+				patches[x][new_y].turtleEnter();
+				break;
+			case 1:
+				new_x = (x-1+size)%size;
+				updateLocation(new_x, y);
+				patches[new_x][y].turtleEnter();
+				break;
+			case 2:
+				new_y = (y-1+size)%size;
+				updateLocation(x, new_y);
+				patches[x][new_y].turtleEnter();
+				break;
+			case 3:
+				new_x = (x+1)%size;
+				updateLocation(new_x, y);
+				patches[new_x][y].turtleEnter();
+				break;
+			default:
+				break;
+		}
+	}
+	
+	public void havest(Patch[][] patches) {
+		int amount = patches[x][y].harvested();
+		gainGrains(amount);
+	}
+	
+	
 	
 }

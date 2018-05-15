@@ -3,7 +3,6 @@ package wealth_distribution;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class World {
 	private Patch[][] patches;
@@ -35,33 +34,33 @@ public class World {
 		// Spread that grain around the window a little and put a little back
 		// into the patches that are the "best land" found above
 		for(int i = 0; i < 5; i++) {
-			for(int x = 0; x < this.size; x++) {
-				for(int y = 0; y < this.size; y++) {
-					if(this.patches[x][y].isBestLand()) {
+			for(int x = 0; x < size; x++) {
+				for(int y = 0; y < size; y++) {
+					if(patches[x][y].isBestLand()) {
 						int maxGrain = patches[x][y].getMaxGrain();
 						patches[x][y].setGrains(maxGrain);
 					}
 				}
 			}
 			
-			for(int x = 0; x < this.size; x++) {
-				for(int y = 0; y < this.size; y++) {
-					diffuse(x, y);
+			for(int x = 0; x < size; x++) {
+				for(int y = 0; y < size; y++) {
+					patches[x][y].diffuse(x, y, patches);
 				}
 			}
 			
 		}
 		//Spread the grain around some more
 		for(int i = 0; i < 10; i++) {
-			for(int x = 0; x < this.size; x++) {
-				for(int y = 0; y < this.size; y++) {
-					diffuse(x, y);
+			for(int x = 0; x < size; x++) {
+				for(int y = 0; y < size; y++) {
+					patches[x][y].diffuse(x, y, patches);
 				}
 			}
 		}
 		//initial grain level is also maximum
-		for(int x = 0; x < this.size; x++) {
-			for(int y = 0; y < this.size; y++) {
+		for(int x = 0; x < size; x++) {
+			for(int y = 0; y < size; y++) {
 				this.patches[x][y].finalGrainsInitilization();
 			}
 		}
@@ -83,10 +82,10 @@ public class World {
 			int yAxis = new_turtle.getY();
 			patches[xAxis][yAxis].turtleEnter();
 		}
-		int maxWealth = findMaxWealth();
+		//int maxWealth = findMaxWealth();
 		
 		// update each turtle wealth class based on initial held grains
-		updateTurtleClass(maxWealth);
+		updateTurtleClass(findMaxWealth());
 		classInfo();
 		//printTurtle();
 	}
@@ -130,15 +129,15 @@ public class World {
 		int low_count = 0;
 		int medium_count = 0;
 		int high_count = 0;
-		for(int i = 0; i < this.turtles.size(); i++) {
-			switch (this.turtles.get(i).getWealthClass()){
-				case 0:
+		for(int i = 0; i < turtles.size(); i++) {
+			switch (turtles.get(i).getWealthClass()){
+				case Params.WORKING_CLASS:
 					low_count++;
 					break;
-				case 1:
+				case Params.MIDDLE_CLASS:
 					medium_count++;
 					break;
-				case 2:
+				case Params.UPPER_CLASS:
 					high_count++;
 					break;
 				default: 
@@ -164,10 +163,7 @@ public class World {
 	public void harvestGrains() {
 		// distribute grain evenly if several turtles on same patch
 		for(Turtle t : turtles) {
-			int x = t.getX();
-			int y = t.getY();	
-			int amount = patches[x][y].harvested();
-			t.gainGrains(amount);
+			t.havest(patches);
 		}
 		
 		clearPatches();
@@ -185,38 +181,7 @@ public class World {
 	
 	public void move() {
 		for(Turtle t : turtles) {
-			int x = t.getX();
-			int y = t.getY();
-			// turtle leave this patch, decrease count in this patch
-			this.patches[x][y].turtleLeave();
-			
-			int new_x;
-			int new_y;
-			// turtle enter new patch based on heading, increase count in that patch
-			switch (t.getHeading()) {
-				case 0:
-					new_y = (y+1)%size;
-					t.updateLocation(x, new_y);
-					this.patches[x][new_y].turtleEnter();
-					break;
-				case 1:
-					new_x = (x-1+size)%size;
-					t.updateLocation(new_x, y);
-					this.patches[new_x][y].turtleEnter();
-					break;
-				case 2:
-					new_y = (y-1+size)%size;
-					t.updateLocation(x, new_y);
-					this.patches[x][new_y].turtleEnter();
-					break;
-				case 3:
-					new_x = (x+1)%size;
-					t.updateLocation(new_x, y);
-					this.patches[new_x][y].turtleEnter();
-					break;
-				default:
-					break;
-			}
+			t.move(patches);
 		}
 		
 	}
@@ -229,7 +194,7 @@ public class World {
 			if(!t.checkSurvive()) {
 				// if die, produce an offspring
 				patches[t.getX()][t.getY()].turtleLeave();
-				Turtle offspring = new Turtle();
+				Turtle offspring = new Turtle(t.getCurrentGrains());
 				turtles.set(i, offspring);
 				patches[offspring.getX()][offspring.getY()].turtleEnter();
 				
@@ -253,22 +218,7 @@ public class World {
 	}
 
 
-	
-	public void diffuse(int x, int y) {
-		// Calculate amount to spread to each neighbour
-		patches[x][y].grainDiffuse();
-		double amount = patches[x][y].getDiffuseAmount();
-		
-		// Spread grains to surrounding 8 patches equally
-		patches[(x-1+size)%size][(y-1+size)%size].addGrains(amount);
-		patches[x][(y-1+size)%size].addGrains(amount);
-		patches[(x+1)%size][(y-1+size)%size].addGrains(amount);
-		patches[(x-1+size)%size][y].addGrains(amount);
-		patches[(x+1)%size][y].addGrains(amount);
-		patches[(x-1+size)%size][(y+1)%size].addGrains(amount);
-		patches[x][(y+1)%size].addGrains(amount);
-		patches[(x+1)%size][(y+1)%size].addGrains(amount);
-	}
+
 	
 	public void sanityCheck() {
 		// check total turtle count in patches remain unchanged
@@ -306,11 +256,6 @@ public class World {
 			
 	}
 	
-	public static void main(String args[]) {
-		World w = new World();
-		w.setUp();
-		for(int i = 0;  i < 100; i++) {
-			w.go();
-		}	
-	}
+	
+
 }
