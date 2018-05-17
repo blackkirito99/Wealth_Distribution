@@ -7,7 +7,7 @@ package wealth_distribution;
  */
 
 
-public class Patch {
+public class Patch extends Tile{
 	//maximum number of grain allowed to grow on the tile
 	private int max_grain;
 	//current grains on the tile
@@ -107,7 +107,7 @@ public class Patch {
 	}
 	
 	public int getTurtleCount() {
-		return this.turtle_on_patch;
+		return turtle_on_patch;
 	}
 	
 	//grains exhausted after being harvested

@@ -7,7 +7,7 @@ package wealth_distribution;
  *
  */
 
-public class Turtle implements Comparable<Turtle>{
+public class Turtle extends Agent implements Comparable<Turtle>{
 	//amount of grain a turtle currently possesses
 	private int heldGrains;
 	private int age;
@@ -198,6 +198,8 @@ public class Turtle implements Comparable<Turtle>{
 	public int compareTo(Turtle arg0) {
 		return this.getCurrentGrains() - arg0.getCurrentGrains();
 	}
+
+	
 	
 	
 	

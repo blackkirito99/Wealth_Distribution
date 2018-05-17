@@ -1,6 +1,7 @@
 package wealth_distribution;
 
 /**
+ * 
  * World where turtles interact with the entire map
  */
 import java.util.ArrayList;
